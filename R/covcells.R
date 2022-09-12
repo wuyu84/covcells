@@ -5,7 +5,7 @@ cellsmake=function(zuotu){
   Sys.setenv('VROOM_CONNECTION_SIZE'=99999999)
   zuotu[is.na(zuotu)]=''
   #读取模板设定参数----
-  x=read_lines('./man/元素模板库-职业版.txt')
+
   dis_col=data.frame(
     quhua=c("福田", "南山", "罗湖", "宝安", "龙岗",
             "盐田", "龙华",'坪山','光明','大鹏','深汕'),
@@ -23,7 +23,7 @@ cellsmake=function(zuotu){
     yanse=c('255,0,0','13,71,161')
   )
   #生成模板----
-  y=x
+  y=cellmodels
   for (i in 1:nrow(zuotu)) {
     k1=paste('采样',sprintf("%02s",i),sep='')
     k2=paste('街道',sprintf("%02s",i),sep='')

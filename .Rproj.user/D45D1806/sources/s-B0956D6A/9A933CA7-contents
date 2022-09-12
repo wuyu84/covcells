@@ -1,0 +1,141 @@
+library(tidyverse)
+library(xml2)
+library(rvest)
+setwd('C:/Users/szcdc/Desktop/0811起/')
+setwd('/Users/wuyu/Downloads')
+pacman::p_load(plyr,tidyverse,myfunc,kableExtra,docxtractr,lubridate,readxl,dplyr)
+pacman::p_load(crosstable)
+
+ur1<-"828以来疫情0911-24.svg"
+wpage=read_html(ur1,encoding='UTF-8')
+h1=wpage%>%html_nodes('svg g g text')%>%
+  html_text%>%unique()%>%
+  .[!grepl('[0-9]',.)]
+
+ur2<-"823以来疫情全个案.svg"
+wpage=read_html(ur2,encoding='UTF-8')
+h2=wpage%>%html_nodes('svg g g text')%>%
+  html_text%>%unique()%>%
+  .[!grepl('[0-9]',.)]
+
+ur3<-"华星专场0910-8.svg"
+wpage=read_html(ur3,encoding='UTF-8')
+h3=wpage%>%html_nodes('svg g g text')%>%
+  html_text%>%unique()%>%
+  .[!grepl('[0-9]',.)]
+
+gyds=readxl::read_xlsx('广业大厦专项.xlsx')
+
+hb=c(h1,h2,h3,gyds$姓名)%>%unique
+
+
+dz=readxl::read_xlsx('0912 1200 0811深圳本地疫情一览表.xlsx',sheet = '0811')%>% dcdate()%>%
+  dplyr::rename('初阳采样jx'='初筛阳性采样时间（简讯）',
+         '初阳采样yhs'='初筛阳性采样时间（粤核酸）') %>%
+  filter(新增时间>as.Date('2022-8-27'))%>%
+  mutate(地址=gsub("广东省",'',患者家庭地址) %>%gsub("深圳市",'',.),
+         管辖区=gsub('区','',管辖区),
+         街道=gsub('街道','',街道),
+         报告=paste(month(新增时间),sprintf('%02d',day(新增时间)),sep=''))%>%
+  dplyr::rename('职业'='具体岗位')%>%
+  mutate(采样=rowMin(data.frame(初阳采样jx,初阳采样yhs)))%>%
+  select(all_of(c('管辖区','街道','采样','报告','姓名','社会面','关联','备注...19',
+                         '地址','患者工作单位','人群分类','职业')))%>%
+  mutate(采样=paste(month(采样),'-',day(采样),sep=''))%>%
+  filter(!姓名%in% hb)%>%
+  filter(!grepl('0',姓名))%>%
+  filter(!grepl('混一',姓名))%>%
+  arrange(管辖区,街道)%>%
+  filter(!姓名=='吴志娟')
+
+writexl::write_xlsx(dz[1:20,],'待做图.xlsx')
+
+library(covcells)
+
+cellsmake(dz)
+
+getwd()
+#生成做图pos----
+Sys.setenv('VROOM_CONNECTION_SIZE'=99999999)
+x=read_lines('/Volumes/sdata/0811起/元素模板库-职业版.txt')
+
+zuotu=read_xlsx('待做图.xlsx')%>%
+  mutate(职业=ifelse(is.na(职业),' ',职业))
+
+nid=read_xlsx('0828起新冠数据看板场所版(简版) 0905以后.xlsx',sheet='数据')%>%
+  select(编号,姓名)
+zuotu=left_join(zuotu,nid)%>%
+  mutate(报告=paste(报告,'-',编号,sep=''))
+
+dis_col=data.frame(
+  quhua=c("福田", "南山", "罗湖", "宝安", "龙岗", "盐田", "龙华"),
+  yanse=c('255,183,77','255,241,118','100,180,246','0,255,255','171,250,80','27,94,31','186,104,200')
+)
+
+dis_col_font=data.frame(
+  quhua=c("福田", "南山", "罗湖", "宝安", "龙岗", "盐田", "龙华"),
+  yanse=c('0,0,0','0,0,0','0,0,0','0,0,0','0,0,0','255,255,255','255,255,255')
+)
+fway_col=data.frame(
+  faxian=c('社会面','隔离管控'),
+  yanse=c('255,0,0','13,71,161')
+)
+
+y=x
+for (i in 1:nrow(zuotu)) {
+  k1=paste('采样',sprintf("%02s",i),sep='')
+  k2=paste('街道',sprintf("%02s",i),sep='')
+  k3=paste('姓名',sprintf("%02s",i),sep='')
+  k4=paste('报告',sprintf("%02s",i),sep='')
+  k5=paste('职业',sprintf("%02s",i),sep='')
+  col_sample0=paste(i*10,i*10,i*10,sep=',')
+  col_sample1=fway_col$yanse[fway_col$faxian==zuotu$社会面[i]]
+  col_qu0=paste(i*10+5,i*10+5,i*10+5,sep=',')
+  col_qu1=dis_col$yanse[dis_col$quhua==zuotu$管辖区[i]]
+  col_qu0_font=paste(i*10+8,i*10+8,i*10+8,sep=',')
+  col_qu1_font=dis_col_font$yanse[dis_col_font$quhua==zuotu$管辖区[i]]
+  y=gsub(k1,zuotu$采样[i],y)%>%
+    gsub(k2,zuotu$街道[i],.)%>%
+    gsub(k3,zuotu$姓名[i],.)%>%
+    gsub(k4,zuotu$报告[i],.)%>%
+    gsub(k5,zuotu$职业[i],.)%>%
+    gsub(col_sample0,col_sample1,.)%>%
+    gsub(col_qu0,col_qu1,.)%>%
+    gsub(col_qu0_font,col_qu1_font,.)
+}
+
+write_lines(y,'作图用元素库-职业版.pos')
+
+
+#替换指定第几个文本
+# re_num=function(strings,from,to,num){
+#   s1=gregexpr(from,strings)[[1]][num]
+#   aa1=str_sub(strings,1,s1-1)
+#   aa2=str_sub(strings,s1,str_length(strings))
+#   aa2=str_replace(aa2,from,to)
+#   af=c(aa1,aa2)%>%str_flatten
+# }
+# rel_yan=dis_col$yanse[which(dis_col$quhua==zuotu$管辖区[i])]
+# num1=which(gregexpr('街道',x)[[1]]==gregexpr(k2,x)[[1]][1])
+#
+# fway_yan=fway_col$yanse[which(fway_col$faxian==zuotu$社会面[i])]
+# num2=which(gregexpr('采样',x)[[1]]==gregexpr(k1,x)[[1]][1])
+
+
+
+#输出给教育局----
+edu=readxl::read_xlsx('0912 1000 0811深圳本地疫情一览表.xlsx',sheet = '0811')%>%
+  mutate(报告日期=as.Date(新增时间),
+         发现方式a=发现方式...15,
+         age=str_extract(年龄,"([0-9]+)") %>% as.numeric)%>%
+ mutate( age=ifelse(grepl('月',年龄),floor(age/12),age))
+
+edu%>%filter(age>=3 & age<=18)%>%filter(新增时间>as.Date('2022-8-27'))%>%
+  mutate(ID=1:nrow(.))%>%
+  select(ID,管辖区,街道,姓名,报告日期,发现方式a,性别,年龄,病例分类,有效证件号,患者工作单位)%>%
+  writexl::write_xlsx('给教育局0912中小学.xlsx')
+edu%>%filter(新增时间>as.Date('2022-8-27'))%>%
+  filter(age>18)%>%filter(grepl('学校',患者工作单位)|grepl('幼儿园',患者工作单位))%>%
+  mutate(ID=1:nrow(.))%>%
+  select(ID,管辖区,街道,姓名,报告日期,发现方式a,性别,年龄,病例分类,有效证件号,患者工作单位,具体岗位)%>%
+  writexl::write_xlsx('给教育局0912教师.xlsx')

@@ -1,0 +1,26 @@
+{
+    "id": "B23B61AF",
+    "path": "~/Documents/GitHub/covcells/R/covcells.R",
+    "project_path": "R/covcells.R",
+    "type": "r_source",
+    "hash": "273866000",
+    "contents": "",
+    "dirty": false,
+    "created": 1662993143132.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "0,0",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1662993286,
+    "encoding": "GB18030",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1662993286858,
+    "read_only": false,
+    "read_only_alternatives": []
+}
