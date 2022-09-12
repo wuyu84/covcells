@@ -1,4 +1,3 @@
 devtools::install_github('wuyu84/covcells')
 library(covcells)
 
-cells

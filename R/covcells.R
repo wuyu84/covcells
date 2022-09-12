@@ -5,7 +5,6 @@ cellsmake=function(zuotu){
   Sys.setenv('VROOM_CONNECTION_SIZE'=99999999)
   zuotu[is.na(zuotu)]=''
   #读取模板设定参数----
-
   dis_col=data.frame(
     quhua=c("福田", "南山", "罗湖", "宝安", "龙岗",
             "盐田", "龙华",'坪山','光明','大鹏','深汕'),
