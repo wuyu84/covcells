@@ -24,11 +24,11 @@ cellsmake=function(zuotu){
   #生成模板----
   y=cellmodels
   for (i in 1:nrow(zuotu)) {
-    k1=paste('采样',sprintf("%02s",i),sep='')
-    k2=paste('街道',sprintf("%02s",i),sep='')
-    k3=paste('姓名',sprintf("%02s",i),sep='')
-    k4=paste('报告',sprintf("%02s",i),sep='')
-    k5=paste('职业',sprintf("%02s",i),sep='')
+    k1=paste('采样',sprintf("%02d",i),sep='')
+    k2=paste('街道',sprintf("%02d",i),sep='')
+    k3=paste('姓名',sprintf("%02d",i),sep='')
+    k4=paste('报告',sprintf("%02d",i),sep='')
+    k5=paste('职业',sprintf("%02d",i),sep='')
     col_sample0=paste(i*10,i*10,i*10,sep=',')
     col_sample1=fway_col$yanse[fway_col$faxian==zuotu$社会面[i]]
     col_qu0=paste(i*10+5,i*10+5,i*10+5,sep=',')
