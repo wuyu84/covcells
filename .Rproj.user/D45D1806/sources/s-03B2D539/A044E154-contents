@@ -1,0 +1,9 @@
+devtools::install_github('wuyu84/covcells')
+library(covcells)
+
+getwd()
+
+
+cellmodels=readr::read_lines('/Volumes/sdata/0811起/元素模板库-职业版.txt')
+
+save(cellmodels,file = './R/sysdata.rda')
