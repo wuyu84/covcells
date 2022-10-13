@@ -19,12 +19,12 @@ data为输入数据框，其格式要求：
 输出会在当前目录下生成 一个 命名为 待做图元素库.pos 的文件，将其导入wps流程图即可。
 
 注意:一次最多只能制作20个元素,如果超过需要切分数据,分多次运行.
+
+调用包内自带数据框data_test
+cellsmake(data_test)
+
 }
 \description{
 深圳市COV个案关系图 元素批量制作包:
 包括一个函数 cellsmake
-}
-\example{
-调用包内自带数据框data_test
-cellsmake(data_test)
 }
