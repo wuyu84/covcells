@@ -2,7 +2,7 @@
  Make cells for figures
 
 函数使用方法
-cellsmake(data)
+cellsmake(data,filename)
 
 data为输入数据框，其格式要求：
 包括至少7个变量：管辖区，街道，采样，报告，姓名，社会面，职业。均为文本格式。

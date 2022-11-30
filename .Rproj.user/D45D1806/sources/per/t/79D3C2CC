@@ -3,7 +3,7 @@
     "path": "~/Documents/GitHub/covcells/R/covcells.R",
     "project_path": "R/covcells.R",
     "type": "r_source",
-    "hash": "3707284687",
+    "hash": "2721024209",
     "contents": "",
     "dirty": false,
     "created": 1662993694049.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "24,4",
-        "scrollLine": "0"
+        "cursorPosition": "0,9",
+        "scrollLine": "26"
     },
     "folds": "",
-    "lastKnownWriteTime": 1665456815,
+    "lastKnownWriteTime": 1669796069,
     "encoding": "GB18030",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1665456815,
+    "last_content_update": 1669796069730,
     "read_only": false,
     "read_only_alternatives": []
 }
